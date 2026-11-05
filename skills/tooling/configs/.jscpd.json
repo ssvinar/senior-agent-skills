@@ -1,0 +1,13 @@
+{
+  "path": ["."],
+  "format": ["typescript", "tsx"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__fixtures__/**"
+  ],
+  "threshold": 3,
+  "reporters": ["console"]
+}

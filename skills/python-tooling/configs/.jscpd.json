@@ -1,0 +1,7 @@
+{
+  "path": ["src"],
+  "format": ["python"],
+  "ignore": ["**/.venv/**", "**/__pycache__/**", "**/migrations/**"],
+  "threshold": 3,
+  "reporters": ["console"]
+}

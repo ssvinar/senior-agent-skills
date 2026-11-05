@@ -1,0 +1,12 @@
+{
+  "name": "canon",
+  "owner": { "name": "Sergei Svinar" },
+  "description": "Marketplace for the canon plugin.",
+  "plugins": [
+    {
+      "name": "canon",
+      "source": ".",
+      "description": "Verified, non-overlapping skills for TypeScript, React, Next.js and Python work."
+    }
+  ]
+}

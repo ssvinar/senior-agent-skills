@@ -1,0 +1,19 @@
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Kit rules
+        run: node scripts/check.mjs
+      - name: Plugin layout
+        run: npx -y @anthropic-ai/claude-code@2.1.269 plugin validate .

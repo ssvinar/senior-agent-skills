@@ -1,0 +1,6 @@
+{
+  "name": "canon",
+  "version": "1.0.0",
+  "author": { "name": "Sergei Svinar" },
+  "description": "Verified, non-overlapping skills for TypeScript, React, Next.js and Python work: one owner per function, a source for every rule."
+}

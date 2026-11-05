@@ -1,0 +1,4 @@
+# Generated or data files: formatting them changes inputs, not code
+package-lock.json
+eslint-suppressions.json
+**/__fixtures__/**

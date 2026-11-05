@@ -1,0 +1,7 @@
+{
+  "typecheck": "tsc --noEmit",
+  "lint": "eslint .",
+  "format": "prettier --write .",
+  "format:check": "prettier --check .",
+  "audit:code": "knip && knip --include cycles && jscpd"
+}

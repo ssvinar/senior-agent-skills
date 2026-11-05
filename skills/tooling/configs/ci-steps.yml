@@ -1,0 +1,8 @@
+# GitHub Actions steps, in this order, after checkout and setup-node
+- run: npm ci
+- run: npm run typecheck
+- run: npm run format:check
+- run: npm run lint
+- run: npm run audit:code
+- run: npm run build
+# then the project's tests

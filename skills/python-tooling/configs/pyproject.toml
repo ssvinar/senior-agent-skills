@@ -1,0 +1,80 @@
+# Merge these tables into the repo's pyproject.toml.
+# Replace <package> with the import name of the code under src/.
+
+[dependency-groups]
+dev = [
+    "diff-cover==10.6.0",
+    "import-linter==2.15",
+    "mypy==2.4.0",
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "ruff==0.17.0",
+    "vulture==2.16",
+]
+
+[tool.uv]
+# Resolve only releases at least 14 days old; Dependabot's cooldown matches it.
+exclude-newer = "14 days"
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F",          # pycodestyle, Pyflakes
+    "I",                    # import order
+    "N",                    # PEP 8 naming
+    "UP",                   # syntax for the requires-python floor
+    "B",                    # bug-prone patterns
+    "C4", "SIM", "PIE", "PERF",  # idioms
+    "C90", "PLR09",         # complexity and size limits (python-style)
+    "PLE", "PLW",           # Pylint errors and warnings
+    "S",                    # security, Bandit rules (python-security)
+    "ASYNC",                # blocking calls in async code
+    "BLE",                  # blind except
+    "DTZ",                  # naive datetimes
+    "LOG", "G",             # logging misuse
+    "T20",                  # print
+    "PTH",                  # pathlib
+    "PT",                   # pytest style
+    "PGH",                  # type: ignore and noqa without a code
+    "RUF",                  # Ruff rules, including unused noqa and dangling tasks
+]
+# The formatter owns line length; it does not split long strings.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert, use fake secrets and temp paths, and take fixtures as arguments.
+"tests/**" = ["S101", "S105", "S106", "S108", "PLR0913", "PLR0917"]
+
+[tool.mypy]
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+files = ["src"]
+
+[tool.pytest]
+minversion = "9.0"
+addopts = ["-ra"]
+strict = true
+filterwarnings = ["error"]
+log_level = "INFO"
+testpaths = ["tests"]
+# Not packaged (no [build-system]): the tests import from src/ directly.
+pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.vulture]
+paths = ["src", "vulture_whitelist.py"]
+
+[tool.importlinter]
+root_package = "<package>"
+
+[[tool.importlinter.contracts]]
+name = "No import cycles"
+type = "acyclic_siblings"
+ancestors = ["<package>"]

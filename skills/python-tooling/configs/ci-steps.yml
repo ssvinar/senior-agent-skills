@@ -1,0 +1,37 @@
+# GitHub Actions steps, in this order, after checkout
+- uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+  with:
+    version: "0.13.0"
+    enable-cache: true
+- run: uv sync --locked
+- run: uv run mypy
+- run: uv run ruff format --check .
+- run: uv run ruff check .
+- run: uv run vulture
+- run: uv run lint-imports
+  env:
+    PYTHONPATH: src # not packaged; drop when packaged
+- run: npx --yes jscpd@5.4.1 --baseline .jscpd-baseline.json --fail-on-new-clones 0
+- run: uv run pytest --cov --cov-report=xml
+# Coverage of changed lines, compared with origin/main as this PR's Ruff formats it:
+# lines only the formatter rewrote are not new code. Nor are lines whose only change is a
+# trailing # noqa or # type: ignore: dropped on both sides and committed (diff-cover also counts
+# uncommitted changes); coverage.xml line numbers stay, and the tree is restored afterwards.
+# A moved or copied file counts only its changed lines (diff.renames copies), also when its
+# old path now holds another file.
+- run: |
+    git config diff.renames copies
+    pragmas='s/  # (noqa|type: ignore)\b.*$//'
+    base="$RUNNER_TEMP/base"
+    git worktree add -q "$base" origin/main
+    cp pyproject.toml "$base/"
+    uv run ruff format -q "$base"
+    (cd "$base" && git ls-files '*.py' | xargs sed -i -E "$pragmas")
+    git -C "$base" -c user.name=ci -c user.email=ci@localhost commit -qam "formatted base" --allow-empty
+    git ls-files '*.py' | xargs sed -i -E "$pragmas"
+    git -c user.name=ci -c user.email=ci@localhost commit -qam "without trailing noqa and type: ignore" --allow-empty
+    status=0
+    uv run diff-cover coverage.xml --compare-branch="$(git -C "$base" rev-parse HEAD)" --diff-range-notation=.. --fail-under=<tdd-workflow threshold> || status=$?
+    git reset -q --hard HEAD~1
+    exit "$status"
+  if: github.event_name == 'pull_request'

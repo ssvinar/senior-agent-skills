@@ -1,0 +1,12 @@
+# .github/dependabot.yml; cooldown equals [tool.uv] exclude-newer, or uv cannot lock the update.
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 14
+    groups:
+      python:
+        patterns: ["*"]
